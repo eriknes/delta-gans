@@ -8,7 +8,7 @@ from utils import pp, visualize, to_json, show_all_variables
 import tensorflow as tf
 
 flags = tf.app.flags
-flags.DEFINE_integer("epoch", 25)
+flags.DEFINE_integer("epoch", 25, "help help")
 flags.DEFINE_float("learning_rate", 0.0002)
 flags.DEFINE_float("beta1", 0.5)
 flags.DEFINE_integer("train_size", 784)

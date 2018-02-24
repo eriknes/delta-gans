@@ -11,7 +11,7 @@ flags = tf.app.flags
 flags.DEFINE_integer("epoch", 25, "help")
 flags.DEFINE_float("learning_rate", 0.0002, "help")
 flags.DEFINE_float("beta1", 0.5, "help")
-flags.DEFINE_integer("train_size", np.inf, "The size of train images [np.inf]")
+flags.DEFINE_integer("train_size", 784, "The size of train images [np.inf]")
 flags.DEFINE_integer("batch_size", 64, "The size of batch images [64]")
 flags.DEFINE_integer("input_height", 108, "The size of image to use (will be center cropped). [108]")
 flags.DEFINE_integer("input_width", None, "The size of image to use (will be center cropped). If None, same value as input_height [None]")

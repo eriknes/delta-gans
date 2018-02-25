@@ -29,9 +29,9 @@ nx = 101
 ny = 101
 
 X_train = sys.argv[1]
-y_train = sys_argv[2]
-X_test  = sys_argv[3]
-y_test  = sys_argv[4]
+y_train = sys.argv[2]
+X_test  = sys.argv[3]
+y_test  = sys.argv[4]
 
 # Load MNIST data
 #(X_train, y_train), (X_test, y_test) = mnist.load_data()

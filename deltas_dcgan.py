@@ -78,6 +78,7 @@ nx = 101
 ny = 101
 n_test = 1000
 X_train, y_train, X_test, y_test = create_dataset(X, n_braided, nx, ny)
+X_train = X_train[:, np.newaxis, :, :]
 
 # Load MNIST data
 #(X_train, y_train), (X_test, y_test) = mnist.load_data()

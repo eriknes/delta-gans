@@ -2,7 +2,9 @@ import os
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import numpy as np
 from tqdm import tqdm
+import sys
 import matplotlib.pyplot as plt
+
 
 from keras.layers import Input
 from keras.models import Model, Sequential
@@ -25,6 +27,11 @@ np.random.seed(1)
 randomDim = 100
 nx = 101
 ny = 101
+
+X_train = sys.argv[1]
+y_train = sys_argv[2]
+X_test  = sys_argv[3]
+y_test  = sys_argv[4]
 
 # Load MNIST data
 #(X_train, y_train), (X_test, y_test) = mnist.load_data()

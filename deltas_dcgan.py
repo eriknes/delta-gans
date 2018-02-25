@@ -44,7 +44,7 @@ def create_dataset(X, n_braided, nx, ny, n_test = 1000):
   X_new = np.zeros((n_tot,nx,ny))
   for i in range(n_tot):
     Xtemp = np.reshape(X[:,i],(101,101))
-    X_new[i,:,:] = Xtemp[5:94,5:94]
+    X_new[i,:,:] = Xtemp[5:95,5:95]
   
   
   X_train = X_new[0:n_tot-n_test,:,:]

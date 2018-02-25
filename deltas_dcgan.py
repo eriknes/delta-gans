@@ -16,6 +16,46 @@ from keras.optimizers import Adam
 from keras import backend as K
 from keras import initializers
 
+def load_file(fname):
+  X = pd.read_csv(fname)
+  X = X.values
+  return X
+  
+
+def create_dataset(X, n_braided, nx, ny, n_test = 1000):
+  
+  n_tot = X.shape[0]
+  n_tidal = n_tot - n_braided
+  print("Number of braided samples: " + str(n_braided) )
+  print("Number of tidal samples: " + str(n_tidal) )
+  
+  X = X.T
+  Y = np.zeros((n_braided+n_tidal))
+  Y[0:n_braided] = 0
+  Y[n_braided:n_braided+n_tidal] = 1
+  
+  # Random permutation
+  p = np.random.permutation(n_tot)
+  X = X[:,p]
+  Y = Y[p]
+  
+  # Reshape X
+  X_new = np.zeros((n_tot,nx,ny))
+  for i in range(n_tot):
+    X_new[i,:,:] = np.reshape(X[:,i],(nx,ny))
+  
+  
+  X_train = X_new[0:n_tot-n_test,:,:]
+  Y_train = Y[0:n_tot-n_test]
+  
+  X_test  = X_new[n_tot-n_test:n_tot,:,:]
+  Y_test  = Y[n_tot-n_test:n_tot]
+  
+  print("X_train shape: " + str(X_train.shape))
+  print("Y_train shape: " + str(Y_train.shape))
+  
+  return X_train, Y_train, X_test, Y_test
+
 K.set_image_dim_ordering('th')
 
 # Deterministic output.
@@ -28,10 +68,15 @@ randomDim = 100
 nx = 101
 ny = 101
 
-X_train = sys.argv[1]
-y_train = sys.argv[2]
-X_test  = sys.argv[3]
-y_test  = sys.argv[4]
+fname = "fluvialStylesData.csv"
+X = load_file(fname)
+X = X.astype('uint8')
+
+n_braided = 26355
+nx = 101
+ny = 101
+n_test = 1000
+X_train, y_train, X_test, y_test = create_dataset(X, n_braided, nx, ny)
 
 # Load MNIST data
 #(X_train, y_train), (X_test, y_test) = mnist.load_data()

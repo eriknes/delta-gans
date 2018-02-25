@@ -43,7 +43,8 @@ def create_dataset(X, n_braided, nx, ny, n_test = 1000):
   # Reshape X
   X_new = np.zeros((n_tot,nx,ny))
   for i in range(n_tot):
-    X_new[i,:,:] = np.reshape(X[:,i],(nx,ny))
+    Xtemp = np.reshape(X[:,i],(101,101))
+    X_new[i,:,:] = Xtemp[5:94,5:94]
   
   
   X_train = X_new[0:n_tot-n_test,:,:]
@@ -66,18 +67,16 @@ np.random.seed(1)
 # The results are a little better when the dimensionality of the random vector is only 10.
 # The dimensionality has been left at 100 for consistency with other GAN implementations.
 randomDim = 100
-nx = 101
-ny = 101
 
 fname = "fluvialStylesData.csv"
-X = load_file(fname)
-X = X.astype('uint8')
+X_train = load_file(fname)
+X_train = X_train.astype('uint8')
 
 n_braided = 26355
-nx = 101
-ny = 101
+nx = 90
+ny = 90
 n_test = 1000
-X_train, y_train, X_test, y_test = create_dataset(X, n_braided, nx, ny)
+X_train, y_train, X_test, y_test = create_dataset(X_train, n_braided, nx, ny)
 X_train = X_train[:, np.newaxis, :, :]
 
 # Load MNIST data
@@ -90,13 +89,13 @@ adam = Adam(lr=0.0002, beta_1=0.5)
 
 # Generator
 generator = Sequential()
-generator.add(Dense(128*7*7, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
+generator.add(Dense(128*15*15, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 generator.add(LeakyReLU(0.2))
-generator.add(Reshape((128, 7, 7)))
+generator.add(Reshape((128, 15, 15)))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(64, kernel_size=(5, 5), padding='same'))
 generator.add(LeakyReLU(0.2))
-generator.add(UpSampling2D(size=(2, 2)))
+generator.add(UpSampling2D(size=(3, 3)))
 generator.add(Conv2D(1, kernel_size=(5, 5), padding='same', activation='tanh'))
 generator.compile(loss='binary_crossentropy', optimizer=adam)
 

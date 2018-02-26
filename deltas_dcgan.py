@@ -20,6 +20,7 @@ from keras import initializers
 def load_file(fname):
   X = pd.read_csv(fname)
   X = X.values
+  X = X.astype('uint8')
   return X
   
 
@@ -62,7 +63,7 @@ K.set_image_dim_ordering('th')
 
 # Deterministic output.
 # Tired of seeing the same results every time? Remove the line below.
-np.random.seed(1)
+#np.random.seed(1)
 
 # The results are a little better when the dimensionality of the random vector is only 10.
 # The dimensionality has been left at 100 for consistency with other GAN implementations.
@@ -70,7 +71,6 @@ randomDim = 100
 
 fname = "fluvialStylesData.csv"
 X_train = load_file(fname)
-X_train = X_train.astype('uint8')
 
 n_braided = 26355
 nx = 90

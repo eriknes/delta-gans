@@ -45,7 +45,7 @@ def create_dataset(X, n_braided, nx, ny, n_test = 1000):
   X_new = np.zeros((n_tot,nx,ny))
   for i in range(n_tot):
     Xtemp = np.reshape(X[:,i],(101,101))
-    X_new[i,:,:] = Xtemp[5:95,5:95]
+    X_new[i,:,:] = Xtemp[2:98,2:98]
   
   
   X_train = X_new[0:n_tot-n_test,:,:]
@@ -73,8 +73,8 @@ fname = "fluvialStylesData.csv"
 X_train = load_file(fname)
 
 n_braided = 26355
-nx = 90
-ny = 90
+nx = 96
+ny = 96
 n_test = 1000
 X_train, y_train, X_test, y_test = create_dataset(X_train, n_braided, nx, ny)
 X_train = X_train[:, np.newaxis, :, :]
@@ -89,13 +89,19 @@ adam = Adam(lr=0.0002, beta_1=0.5)
 
 # Generator
 generator = Sequential()
-generator.add(Dense(128*15*15, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
+generator.add(Dense(128*6*6, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 generator.add(LeakyReLU(0.2))
-generator.add(Reshape((128, 15, 15)))
+generator.add(Reshape((128, 8, 8)))
 generator.add(UpSampling2D(size=(2, 2)))
-generator.add(Conv2D(64, kernel_size=(5, 5), padding='same'))
+generator.add(Conv2D(64, kernel_size=(3, 3), padding='same'))
 generator.add(LeakyReLU(0.2))
-generator.add(UpSampling2D(size=(3, 3)))
+generator.add(UpSampling2D(size=(2, 2)))
+generator.add(Conv2D(32, kernel_size=(5, 5), padding='same'))
+generator.add(LeakyReLU(0.2))
+generator.add(UpSampling2D(size=(2, 2)))
+generator.add(Conv2D(16, kernel_size=(5, 5), padding='same'))
+generator.add(LeakyReLU(0.2))
+generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(1, kernel_size=(5, 5), padding='same', activation='tanh'))
 generator.compile(loss='binary_crossentropy', optimizer=adam)
 
@@ -105,6 +111,9 @@ discriminator.add(Conv2D(64, kernel_size=(5, 5), strides=(2, 2), padding='same',
 discriminator.add(LeakyReLU(0.2))
 discriminator.add(Dropout(0.3))
 discriminator.add(Conv2D(128, kernel_size=(5, 5), strides=(2, 2), padding='same'))
+discriminator.add(LeakyReLU(0.2))
+discriminator.add(Dropout(0.3))
+discriminator.add(Conv2D(256, kernel_size=(5, 5), strides=(2, 2), padding='same'))
 discriminator.add(LeakyReLU(0.2))
 discriminator.add(Dropout(0.3))
 discriminator.add(Flatten())
@@ -194,5 +203,5 @@ def train(epochs=1, batchSize=128):
     plotLoss(e)
 
 if __name__ == '__main__':
-    train(100, 128)
+    train(5, 128)
 

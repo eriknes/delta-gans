@@ -112,7 +112,7 @@ discriminator.add(Dense(1, activation='sigmoid'))
 discriminator.compile(loss='binary_crossentropy', optimizer=adam)
 
 # Combined network
-discriminator.trainable = True
+#discriminator.trainable = False
 ganInput = Input(shape=(randomDim,))
 x = generator(ganInput)
 ganOutput = discriminator(x)

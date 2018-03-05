@@ -68,7 +68,7 @@ K.set_image_dim_ordering('th')
 
 # The results are a little better when the dimensionality of the random vector is only 10.
 # The dimensionality has been left at 100 for consistency with other GAN implementations.
-randomDim = 100
+randomDim = 50
 
 fname = "fluvialStylesData.csv"
 X_train = load_file(fname)
@@ -93,18 +93,15 @@ generator = Sequential()
 generator.add(Dense(512*6*6, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 generator.add(BatchNormalization())
 generator.add(LeakyReLU(0.2))
-generator.add(Dropout(0.2))
 generator.add(Reshape((512, 6, 6)))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(256, kernel_size=(5, 5), padding='same'))
 generator.add(BatchNormalization())
 generator.add(LeakyReLU(0.2))
-generator.add(Dropout(0.2))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(128, kernel_size=(5, 5), padding='same'))
 generator.add(BatchNormalization())
 generator.add(LeakyReLU(0.2))
-generator.add(Dropout(0.2))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(64, kernel_size=(5, 5), padding='same'))
 generator.add(BatchNormalization())

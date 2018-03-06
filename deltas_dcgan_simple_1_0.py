@@ -189,12 +189,14 @@ def train(epochs=1, batchSize=128):
         gLosses.append(gloss)
         print('Generator Loss: '+str(gloss) + ', Discriminator Loss: ' + str(dloss))
 
-        if e == 1 or e % 5 == 0:
-            plotGeneratedImages(e)
-            saveModels(e)
+        plotGeneratedImages(e)
+        # Plot losses from every epoch
+        plotLoss(e)
 
-    # Plot losses from every epoch
-    plotLoss(e)
+        if e == 1 or e % 5 == 0:
+            saveModels(e)
+            
+ 
 
 if __name__ == '__main__':
     train(40, 128)

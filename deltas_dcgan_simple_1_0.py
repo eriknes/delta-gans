@@ -39,22 +39,22 @@ def create_dataset(X, n_braided, nx, ny, n_test = 1000):
   Y[n_braided:n_braided+n_tidal] = 1
   
   # Random permutation
-  p = np.random.permutation(n_tot)
+  p = np.random.permutation(n_braided)
   X = X[:,p]
   Y = Y[p]
   
   # Reshape X
-  X_new = np.zeros((n_tot,nx,ny))
-  for i in range(n_tot):
+  X_new = np.zeros((n_braided,nx,ny))
+  for i in range(n_braided):
     Xtemp = np.reshape(X[:,i],(101,101))
     X_new[i,:,:] = Xtemp[2:98,2:98]
   
   
-  X_train = X_new[0:n_tot-n_test,:,:]
-  Y_train = Y[0:n_tot-n_test]
+  X_train = X_new[0:n_braided-n_test,:,:]
+  Y_train = Y[0:n_braided-n_test]
   
-  X_test  = X_new[n_tot-n_test:n_tot,:,:]
-  Y_test  = Y[n_tot-n_test:n_tot]
+  X_test  = X_new[n_braided-n_test:n_braided,:,:]
+  Y_test  = Y[n_braided-n_test:n_braided]
   
   print("X_train shape: " + str(X_train.shape))
   print("Y_train shape: " + str(Y_train.shape))
@@ -77,7 +77,7 @@ X_train = load_file(fname)
 n_braided = 26355
 nx = 96
 ny = 96
-n_test = 1000
+n_test = 500
 X_train, y_train, X_test, y_test = create_dataset(X_train, n_braided, nx, ny)
 X_train = X_train[:, np.newaxis, :, :]
 
@@ -91,40 +91,24 @@ adam = Adam(lr=0.0002, beta_1=0.5)
 
 # Generator
 generator = Sequential()
-generator.add(Dense(256*12*12, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
-generator.add(BatchNormalization())
+generator.add(Dense(256*24*24, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 generator.add(Activation('relu'))
-generator.add(Reshape((256, 12, 12)))
+generator.add(Reshape((256, 24, 24)))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(128, kernel_size=(5, 5), padding='same'))
-generator.add(BatchNormalization())
 generator.add(Activation('relu'))
 generator.add(UpSampling2D(size=(2, 2)))
-generator.add(Conv2D(64, kernel_size=(5, 5), padding='same'))
-generator.add(BatchNormalization())
-generator.add(Activation('relu'))
-generator.add(UpSampling2D(size=(2, 2)))
-generator.add(Conv2D(1, kernel_size=(5, 5), padding='same', activation='tanh'))
+generator.add(Conv2D(1, kernel_size=(5, 5), padding='same', activation='sigmoid'))
 generator.compile(loss='binary_crossentropy', optimizer=adam)
 
 # Discriminator
 discriminator = Sequential()
-discriminator.add(Conv2D(64, kernel_size=(5, 5), strides=(2, 2), padding='same', input_shape=(1, nx, ny), kernel_initializer=initializers.RandomNormal(stddev=0.02)))
-discriminator.add(BatchNormalization())
+discriminator.add(Conv2D(64, kernel_size=(16, 16), strides=(2, 2), padding='same', input_shape=(1, nx, ny), kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
-discriminator.add(Conv2D(128, kernel_size=(5, 5), strides=(2, 2), padding='same'))
-discriminator.add(BatchNormalization())
+discriminator.add(Conv2D(128, kernel_size=(8, 8), strides=(2, 2), padding='same'))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
-discriminator.add(Conv2D(256, kernel_size=(5, 5), strides=(2, 2), padding='same'))
-discriminator.add(BatchNormalization())
+discriminator.add(Conv2D(256, kernel_size=(4, 4), strides=(2, 2), padding='same'))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
-discriminator.add(Conv2D(512, kernel_size=(5, 5), strides=(2, 2), padding='same'))
-discriminator.add(BatchNormalization())
-discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
 discriminator.add(Flatten())
 discriminator.add(Dense(1, activation='sigmoid'))
 discriminator.compile(loss='binary_crossentropy', optimizer=adam)

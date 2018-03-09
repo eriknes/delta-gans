@@ -26,7 +26,7 @@ def load_file(fname):
   return X
   
 
-def create_dataset(X, n_braided, nx, ny, n_test = 1000):
+def create_dataset(X, n_braided, nx, ny, n_test = 200):
   
   n_tot = X.shape[0]
   n_tidal = n_tot - n_braided
@@ -50,11 +50,11 @@ def create_dataset(X, n_braided, nx, ny, n_test = 1000):
     X_new[i,:,:] = Xtemp[2:98,2:98]
   
   
-  X_train = X_new[0:n_braided-n_test,:,:]
-  Y_train = Y[0:n_braided-n_test]
+  X_train = X_new[n_braided:n_tot-n_test,:,:]
+  Y_train = Y[n_braided:n_tot-n_test]
   
-  X_test  = X_new[n_braided-n_test:n_braided,:,:]
-  Y_test  = Y[n_braided-n_test:n_braided]
+  X_test  = X_new[n_tot-n_test:n_tot,:,:]
+  Y_test  = Y[n_tot-n_test:n_tot]
   
   print("X_train shape: " + str(X_train.shape))
   print("Y_train shape: " + str(Y_train.shape))
@@ -77,8 +77,8 @@ X_train = load_file(fname)
 n_braided = 26355
 nx = 96
 ny = 96
-n_test = 500
-X_train, y_train, X_test, y_test = create_dataset(X_train, n_braided, nx, ny)
+n_test = 200
+X_train, y_train, X_test, y_test = create_dataset(X_train, n_braided, nx, ny, n_test)
 X_train = X_train[:, np.newaxis, :, :]
 
 # Load MNIST data
@@ -101,7 +101,7 @@ generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(64, kernel_size=(6, 6), padding='same'))
 generator.add(Activation('relu'))
 generator.add(UpSampling2D(size=(2, 2)))
-generator.add(Conv2D(1, kernel_size=(6, 6), padding='same', activation='sigmoid'))
+generator.add(Conv2D(1, kernel_size=(12, 12), padding='same', activation='sigmoid'))
 generator.compile(loss='binary_crossentropy', optimizer=adam)
 
 # Discriminator

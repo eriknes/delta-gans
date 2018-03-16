@@ -26,35 +26,32 @@ def load_file(fname):
   return X
   
 
-def create_dataset(X, n_braided, nx, ny, n_test = 1000):
+def create_dataset(X, nx, ny, n_test = 200):
   
-  n_tot = X.shape[0]
-  n_tidal = n_tot - n_braided
+  m = X.shape[0]
   print("Number of braided samples: " + str(n_braided) )
   print("Number of tidal samples: " + str(n_tidal) )
   
   X = X.T
-  Y = np.zeros((n_braided+n_tidal))
-  Y[0:n_braided] = 0
-  Y[n_braided:n_braided+n_tidal] = 1
+  Y = np.zeros((m,))
   
-  # Random permutation
-  p = np.random.permutation(n_braided)
+  # Random permutation of samples
+  p = np.random.permutation(m)
   X = X[:,p]
   Y = Y[p]
   
   # Reshape X
-  X_new = np.zeros((n_braided,nx,ny))
-  for i in range(n_braided):
+  X_new = np.zeros((m,nx,ny))
+  for i in range(m):
     Xtemp = np.reshape(X[:,i],(101,101))
     X_new[i,:,:] = Xtemp[2:98,2:98]
   
   
-  X_train = X_new[0:n_braided-n_test,:,:]
-  Y_train = Y[0:n_braided-n_test]
+  X_train = X_new[0:m-n_test,:,:]
+  Y_train = Y[0:m-n_test]
   
-  X_test  = X_new[n_braided-n_test:n_braided,:,:]
-  Y_test  = Y[n_braided-n_test:n_braided]
+  X_test  = X_new[m-n_test:m,:,:]
+  Y_test  = Y[m-n_test:m]
   
   print("X_train shape: " + str(X_train.shape))
   print("Y_train shape: " + str(Y_train.shape))
@@ -69,16 +66,16 @@ K.set_image_dim_ordering('th')
 
 # The results are a little better when the dimensionality of the random vector is only 10.
 # The dimensionality has been left at 100 for consistency with other GAN implementations.
-randomDim = 50
 
-fname = "fluvialStylesData.csv"
-X_train = load_file(fname)
+randomDim   = 50
 
-n_braided = 26355
-nx = 96
-ny = 96
-n_test = 500
-X_train, y_train, X_test, y_test = create_dataset(X_train, n_braided, nx, ny)
+fname       = "braidedData.csv"
+X_train     = load_file(fname)
+
+nx          = 96
+ny          = 96
+
+X_train, y_train, X_test, y_test = create_dataset(X_train, nx, ny)
 X_train = X_train[:, np.newaxis, :, :]
 
 # Load MNIST data

@@ -83,7 +83,7 @@ X_train = X_train[:, np.newaxis, :, :]
 #X_train = X_train[:, np.newaxis, :, :]
 
 # Optimizer
-adam = Adam(lr=0.0003, beta_1=0.5)
+adam = Adam(lr=0.0002, beta_1=0.5)
 
 # Generator
 generator = Sequential()
@@ -97,23 +97,23 @@ generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(64, kernel_size=(6, 6), padding='same'))
 generator.add(Activation('relu'))
 generator.add(UpSampling2D(size=(2, 2)))
-generator.add(Conv2D(1, kernel_size=(9, 9), padding='same', activation='sigmoid'))
+generator.add(Conv2D(1, kernel_size=(6, 6), padding='same', activation='sigmoid'))
 generator.compile(loss='binary_crossentropy', optimizer=adam)
 
 # Discriminator
 discriminator = Sequential()
 discriminator.add(Conv2D(64, kernel_size=(12, 12), strides=(2, 2), padding='same', input_shape=(1, nx, ny), kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
+discriminator.add(Dropout(0.2))
 discriminator.add(Conv2D(128, kernel_size=(8, 8), strides=(2, 2), padding='same'))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
+discriminator.add(Dropout(0.2))
 discriminator.add(Conv2D(256, kernel_size=(4, 4), strides=(2, 2), padding='same'))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
+discriminator.add(Dropout(0.2))
 discriminator.add(Conv2D(512, kernel_size=(4, 4), strides=(2, 2), padding='same'))
 discriminator.add(LeakyReLU(0.2))
-discriminator.add(Dropout(0.3))
+discriminator.add(Dropout(0.2))
 discriminator.add(Flatten())
 discriminator.add(Dense(1, activation='sigmoid'))
 discriminator.compile(loss='binary_crossentropy', optimizer=adam)

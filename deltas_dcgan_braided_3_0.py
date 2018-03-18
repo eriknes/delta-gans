@@ -26,7 +26,7 @@ def load_file(fname):
   return X
   
 
-def create_dataset(X, nx, ny, n_test = 200):
+def create_dataset(X, nx, ny, n_test = 500):
   
   m = X.shape[0]
   print("Number of braided samples: " + str(m) )
@@ -89,16 +89,16 @@ adam = Adam(lr=0.0002, beta_1=0.5)
 generator = Sequential()
 generator.add(Dense(256*12*12, input_dim=randomDim, kernel_initializer=initializers.RandomNormal(stddev=0.02)))
 generator.add(Activation('relu'))
-generator.add(Dropout(0.2))
+generator.add(Dropout(0.1))
 generator.add(Reshape((256, 12, 12)))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(128, kernel_size=(6,6), padding='same'))
 generator.add(Activation('relu'))
-generator.add(Dropout(0.2))
+#generator.add(Dropout(0.1))
 generator.add(UpSampling2D(size=(2, 2)))
-generator.add(Conv2D(64, kernel_size=(8, 8), padding='same'))
+generator.add(Conv2D(64, kernel_size=(9, 9), padding='same'))
 generator.add(Activation('relu'))
-generator.add(Dropout(0.2))
+#generator.add(Dropout(0.1))
 generator.add(UpSampling2D(size=(2, 2)))
 generator.add(Conv2D(1, kernel_size=(12, 12), padding='same', activation='sigmoid'))
 generator.compile(loss='binary_crossentropy', optimizer=adam)
